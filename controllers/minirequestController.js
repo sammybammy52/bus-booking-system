@@ -1,5 +1,6 @@
 const State = require('../models/State');
 const Park = require('../models/Park');
+const Trip = require('../models/Trip');
 
 
 module.exports.allstates = (req, res) => {
@@ -35,3 +36,21 @@ module.exports.allparks = (req, res) => {
  
      
  }
+
+module.exports.alltrips = (req, res) => {
+
+  var { from, to, date } = req.body;
+
+  Trip.find({ from: from, to: to, departure_date: date }).exec()
+    .then((result) => {
+      res.status(201).send(result);
+      console.log(result);
+    })
+    .catch((err) => {
+      res.status(400).json({
+        problem: "oops something happened"
+      })
+    })
+
+
+}

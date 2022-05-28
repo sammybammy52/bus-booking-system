@@ -2,16 +2,12 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const tripSchema = new Schema({
-    from: {
+const orderSchema = new Schema({
+    name: {
         type: String,
         required:true
     },
     to: {
-        type: String,
-        required:true
-    },
-    price: {
         type: String,
         required:true
     },
@@ -30,19 +26,14 @@ const tripSchema = new Schema({
         required:true
     },
 
-    departure_date: {
+    departure_datetime: {
         type: String,
         required:true
     },
-    departure_time: {
-        type: String,
-        required:true
-    },
-
 
     
 }, {timestamps: true});
 
-const Trip = mongoose.model('Trip', tripSchema);
+const Order = mongoose.model('Order', orderSchema);
 
-module.exports = Trip;
+module.exports = Order;
