@@ -3,19 +3,23 @@ const Park = require('../models/Park');
 const Trip = require('../models/Trip');
 
 
-module.exports.allstates = (req, res) => {
+module.exports.allstates = async (req, res) => {
     
-   State.find().sort({name: 'asc'})
-  .then((result) => {
-    res.status(201).send(result);
-    console.log(result);
-  })
-  .catch((err) => {
-    res.status(400).json({
-        problem: "oops something happened"
-    })
-  })
 
+  try {
+    const states = await State.find().sort({ name: 'asc' })
+
+    const parks = await Park.find().sort({ name: 'asc' })
+
+    console.log(states);
+    console.log(parks);
+
+    res.status(200).json({states ,parks });
+  } catch (error) {
+    res.status(400).json({
+      problem: "oops something happened"
+    })
+  }
     
 }
 
