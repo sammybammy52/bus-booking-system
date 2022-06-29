@@ -45,7 +45,9 @@ module.exports.alltrips = (req, res) => {
 
   var { from, to, date } = req.body;
 
-  Trip.find({ from: from, to: to, departure_date: date }).exec()
+
+
+  Trip.find({ from: from, to: to, departure_date: { $gte: date} }).exec()
     .then((result) => {
       res.status(201).send(result);
       console.log(result);
