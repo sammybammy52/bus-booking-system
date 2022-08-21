@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { isEmail } = require('validator');
 
 const Schema = mongoose.Schema;
 
@@ -7,26 +8,22 @@ const orderSchema = new Schema({
         type: String,
         required:true
     },
-    to: {
+    email:{
         type: String,
-        required:true
+        required: [true, 'Please enter an email'],
+        lowercase: true,
+        validate: [isEmail, 'Please enter a valid email']
     },
-    departure_park: {
+    phone: {
         type: String,
         required:true
     },
 
-    arrival_park: {
+    trip_id: {
         type: String,
         required:true
     },
-
-    seats: {
-        type: Number,
-        required:true
-    },
-
-    departure_datetime: {
+    order_number: {
         type: String,
         required:true
     },
