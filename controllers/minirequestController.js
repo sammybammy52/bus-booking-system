@@ -45,7 +45,8 @@ module.exports.alltrips = (req, res) => {
 
   var { from, to, date } = req.body;
 
-
+  from.toUpperCase();
+  to.toUpperCase();
 
   Trip.find({ from: from, to: to, departure_date: { $gte: date} }).exec()
     .then((result) => {
