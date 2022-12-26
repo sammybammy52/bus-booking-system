@@ -12,6 +12,8 @@ router.get('/login',  authController.login_get)
 
 router.post('/login', authController.login_post)
 
+router.post('/login-google', authController.login_google_post)
+
 router.get('/logout',  authController.logout_get)
 
 module.exports = router;

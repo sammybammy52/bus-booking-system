@@ -65,7 +65,8 @@ module.exports.order_busride = async (req, res) => {
       })
     }
     console.log(response.data.data.metadata.custom_filters);
-
+    //res.send(response.data.data);
+    // /*
     
     const passengers = response.data.data.metadata.custom_filters.passengers;
 
@@ -427,7 +428,7 @@ module.exports.order_busride = async (req, res) => {
       })
     }
 
-    
+    //*/
 
 
   } catch (err) {
@@ -440,25 +441,9 @@ module.exports.order_busride = async (req, res) => {
   
 
 
-  /* const passengers = [
-     {
-       name: "segun olawale",
-       email: "sammybammystudios@gmail.com",
-       phone: "09056112564",
-       trip_id: "62ba3dbd9fe4e81bb1246864"
-
-     },
-
-     {
-       name: "tobi olusegun",
-       email: "blackarrowinfo52@gmail.com",
-       phone: "08113567650",
-       trip_id: "62ba3dbd9fe4e81bb1246864"
-
-     }
-   ] */
+  
   // the response array that contains info that will be sent to the frontend after creating the order and sending an email
 
-   
+  
 
 }
