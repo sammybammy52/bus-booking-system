@@ -2,6 +2,8 @@ const Trip = require('../models/Trip');
 const Order = require('../models/Order');
 const nodemailer = require('nodemailer');
 const { default: axios } = require('axios');
+const User = require('../models/User');
+
 
 
 function generateSerial() {
@@ -64,13 +66,14 @@ module.exports.order_busride = async (req, res) => {
         message: "Unable to Verify Payment"
       })
     }
-    console.log(response.data.data.metadata.custom_filters);
+    console.log(response.data.data.customer.email);
     //res.send(response.data.data);
-    // /*
-    
+
+
     const passengers = response.data.data.metadata.custom_filters.passengers;
 
     const trip_info = response.data.data.metadata.custom_filters.trip_info;
+    const ordered_by = response.data.data.customer.email;
 
     let dd = new Date(trip_info.departure_date);
     let readable_date = dd.toDateString();
@@ -83,7 +86,7 @@ module.exports.order_busride = async (req, res) => {
     //after collecting the information from paystack we have to save each passenger to the db, generate an order number for them,
     // and send info to the frontend 
 
-    
+
     try {
       for (let i = 0; i < passengers.length; i++) {
         let order_number = generateSerial();
@@ -97,7 +100,8 @@ module.exports.order_busride = async (req, res) => {
           email: email,
           phone: phone,
           trip_id: trip_id,
-          order_number: order_number
+          order_number: order_number,
+          ordered_by: ordered_by
         })
 
         store_order = await order.save();
@@ -438,12 +442,41 @@ module.exports.order_busride = async (req, res) => {
     })
   }
 
-  
 
 
-  
+
+
   // the response array that contains info that will be sent to the frontend after creating the order and sending an email
 
-  
+
+
+}
+
+module.exports.tripHistory = async (req, res) => {
+  const { user_id } = req.body;
+
+  try {
+
+    const orders = await Order.find({ ordered_by: user_id }).exec()
+
+    if (orders) {
+      console.log(orders);
+      res.status(200).json({
+        pastTrips: orders
+      });
+    }
+    else {
+      console.log(orders);
+      res.status(200).json({
+        pastTrips: []
+      });
+    }
+  } catch (err) {
+    res.status(400).json({
+      problem: "oops something happened",
+      error: err
+    })
+  }
+
 
 }

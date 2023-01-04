@@ -63,18 +63,20 @@ module.exports.login_get = (req, res) => {
 
 module.exports.signup_post = async (req, res) => {
 
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
     try {
-        const user = await User.create({ email, password });
+        const user = await User.create({ name, email, password });
 
         const token = createToken(user._id, user.email);
         const user_id = user._id;
+        const user_name = user.name;
         const user_email = user.email;
         
         res.status(201).json({
             user: {
                 id: user_id,
+                name: user_name,
                 email: user_email,
             },
             token: token
@@ -97,12 +99,15 @@ module.exports.login_post = async (req, res) => {
         const token = createToken(user._id, user.email);
 
         const user_id = user._id;
+        const user_name = user.name
         const user_email = user.email;
         
         res.status(201).json({
             user: {
                 id: user_id,
+                name: user_name,
                 email: user_email,
+
             },
             token: token
         });
@@ -120,7 +125,7 @@ module.exports.login_google_post = async (req, res) => {
 
     try {
 
-        const { email } = req.body;
+        const { name, email } = req.body;
 
         const filter = { email: email };
 
@@ -131,6 +136,7 @@ module.exports.login_google_post = async (req, res) => {
             user = query;
 
             const user_id = user._id;
+            const user_name = user.name;
             const user_email = user.email;
 
             token = createToken(user._id, user.email);
@@ -138,6 +144,7 @@ module.exports.login_google_post = async (req, res) => {
             res.status(201).json({
                 user: {
                     id: user_id,
+                    name:user_name,
                     email: user_email,
                 },
                 token: token
@@ -146,18 +153,20 @@ module.exports.login_google_post = async (req, res) => {
         }
         else {
             const gen_password = makeid(8);
-            const new_user = { email: email, password: gen_password };
+            const new_user = { name: name, email: email, password: gen_password };
 
             const user = await User.create(new_user);
 
             token = createToken(user._id, user.email);
 
             const user_id = user._id;
+            const user_name = user.name;
             const user_email = user.email;
 
             res.status(201).json({
                 user: {
                     id: user_id,
+                    name:user_name,
                     email: user_email,
                 },
                 token: token

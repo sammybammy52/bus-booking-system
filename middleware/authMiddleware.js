@@ -2,15 +2,17 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const requireAuth = (req, res, next) => {
-    const token = req.cookies.jwt;
+    const token = req.headers.token;
 
     //check if webtoken exists and is verifed
 
     if (token) {
-        jwt.verify(token, 'sammybammy', (err, decodedToken) => {
+        jwt.verify(token, process.env.SECRET_KEY, (err, decodedToken) => {
             if (err) {
                 console.log(err.message);
-                res.redirect('/login');
+                res.status(403).json({
+                    status: "Unauthorized"
+                })
             }
             else{
                 console.log(decodedToken);
@@ -19,7 +21,9 @@ const requireAuth = (req, res, next) => {
         });
     }
     else{
-        res.redirect('/login');
+        res.status(403).json({
+            status: "Unauthorized"
+        })
     }
 }
 

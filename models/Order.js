@@ -27,6 +27,10 @@ const orderSchema = new Schema({
         type: String,
         required:true
     },
+    ordered_by: {
+        type: String,
+        default: null
+    }
 
     
 }, {timestamps: true});
