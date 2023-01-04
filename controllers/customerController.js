@@ -73,7 +73,7 @@ module.exports.order_busride = async (req, res) => {
     const passengers = response.data.data.metadata.custom_filters.passengers;
 
     const trip_info = response.data.data.metadata.custom_filters.trip_info;
-    const ordered_by = response.data.data.customer.email;
+    const ordered_by = response.data.data.metadata.custom_filters.user_id;
 
     let dd = new Date(trip_info.departure_date);
     let readable_date = dd.toDateString();
