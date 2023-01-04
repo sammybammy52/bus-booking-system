@@ -1,8 +1,8 @@
 const Trip = require('../models/Trip');
 const Order = require('../models/Order');
-const nodemailer = require('nodemailer');
 const { default: axios } = require('axios');
 const User = require('../models/User');
+const sendGrid = require('@sendgrid/mail');
 
 
 
@@ -37,15 +37,11 @@ module.exports.order_busride = async (req, res) => {
 
   let reference = req.params.ref;
 
-  //setting up the nodemailer
 
-  let mailTransporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.MY_EMAIL,
-      pass: process.env.EMAIL_PASS
-    }
-  })
+  //setting up sendgrid
+
+  sendGrid.setApiKey(process.env.SENDGRID_KEY);
+
 
   // getting the info from paystack
 
@@ -118,9 +114,9 @@ module.exports.order_busride = async (req, res) => {
 
         //sending the email
 
-        let details = {
-          from: process.env.MY_EMAIL,
+        let messageData = {
           to: email,
+          from: process.env.MY_EMAIL,
           subject: "Ticket Purchase",
           text: "you have successfully purchased a ticket from XYZ TRANSPORT, your order number is " + order_number,
           html: `<!DOCTYPE html>
@@ -394,15 +390,13 @@ module.exports.order_busride = async (req, res) => {
 
 </html>`
         }
+        try {
+          await sendGrid.send(messageData);
+          console.log("message sent");
+        } catch (error) {
+          console.log(error);
+        }
 
-        mailTransporter.sendMail(details, (err) => {
-          if (err) {
-            console.log('error occured', err)
-          }
-          else {
-            console.log('email has sent');
-          }
-        })
 
 
       };
