@@ -3,6 +3,7 @@ const Order = require('../models/Order');
 const { default: axios } = require('axios');
 const User = require('../models/User');
 const sendGrid = require('@sendgrid/mail');
+const nodemailer = require("nodemailer");
 
 
 
@@ -38,10 +39,15 @@ module.exports.order_busride = async (req, res) => {
   let reference = req.params.ref;
 
 
-  //setting up sendgrid
+  //setting up the nodemailer
 
-  sendGrid.setApiKey(process.env.SENDGRID_KEY);
-
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.MY_EMAIL,
+      pass: process.env.EMAIL_PASS
+    }
+  })
 
   // getting the info from paystack
 
@@ -115,8 +121,8 @@ module.exports.order_busride = async (req, res) => {
         //sending the email
 
         let messageData = {
-          to: email,
           from: process.env.MY_EMAIL,
+          to: email,
           subject: "Ticket Purchase",
           text: "you have successfully purchased a ticket from XYZ TRANSPORT, your order number is " + order_number,
           html: `<!DOCTYPE html>
@@ -391,11 +397,17 @@ module.exports.order_busride = async (req, res) => {
 </html>`
         }
         try {
-          await sendGrid.send(messageData);
-          console.log("message sent");
+          let info = await transporter.sendMail(messageData);
+
+          console.log("Message sent: %s", info.messageId);
+          // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+          // Preview only available when sending through an Ethereal account
+          console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
         } catch (error) {
-          console.log(error);
+          console.error(error);
         }
+
 
 
 
@@ -470,6 +482,38 @@ module.exports.tripHistory = async (req, res) => {
       problem: "oops something happened",
       error: err
     })
+  }
+
+
+}
+
+module.exports.testEmail = async (req, res) => {
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.MY_EMAIL,
+      pass: process.env.EMAIL_PASS
+    }
+  })
+
+  let messageData = {
+    from: process.env.MY_EMAIL,
+    to: "sammybammystudios@gmail.com, oldprofessor52@gmail.com",
+    subject: "Ticket Purchase",
+    text: "you have successfully purchased a ticket from XYZ TRANSPORT, your order number is test",
+    html: `hello bro`
+  }
+  try {
+    let info = await transporter.sendMail(messageData);
+
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  } catch (error) {
+    console.error(error);
   }
 
 
