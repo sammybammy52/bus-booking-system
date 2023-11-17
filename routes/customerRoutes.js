@@ -9,6 +9,6 @@ const router = Router();
 
 router.get('/order-busride/:ref', customerController.order_busride)
 router.get('/test-email', customerController.testEmail)
-router.get('/prev-trips', requireAuth, customerController.tripHistory);
+router.get('/prev-trips/:id', requireAuth, customerController.tripHistory);
 
 module.exports = router;

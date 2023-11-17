@@ -459,7 +459,7 @@ module.exports.order_busride = async (req, res) => {
 }
 
 module.exports.tripHistory = async (req, res) => {
-  const { user_id } = req.body;
+  const user_id = req.params.id;
 
   try {
 
